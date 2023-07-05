@@ -1,0 +1,18 @@
+table ip nat {
+        set bypass-ip-set {
+                type ipv4_addr
+                flags interval
+                elements = { 103.97.199.0/24 }
+        }
+
+        chain prerouting {
+                type nat hook prerouting priority filter; policy accept;
+                ip saddr @bypass-ip-set accept
+        }
+
+        chain postrouting {
+                type nat hook postrouting priority srcnat; policy accept;
+                ip daddr @bypass-ip-set accept
+                oifname "eth0.180" masquerade
+        }
+}
